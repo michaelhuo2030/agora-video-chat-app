@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agora Video Chat Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Video Chat Game</h1>
+            <div class="controls">
+                <input type="text" id="channelName" placeholder="Enter channel name" value="test-channel">
+                <input type="text" id="userName" placeholder="Enter your name" value="Player">
+                <button id="joinBtn">Join Channel</button>
+                <button id="leaveBtn" disabled>Leave Channel</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Left side video panel -->
+            <div class="side-video-panel left-panel">
+                <h3>👥 Participants</h3>
+                <div id="leftVideoGrid" class="side-video-grid"></div>
+            </div>
+
+            <!-- Center game area -->
+            <div class="game-container">
+                <canvas id="gameCanvas" width="500" height="350"></canvas>
+                <div class="game-info">
+                    <h3>🎮 Simple Block Game</h3>
+                    <p>Use arrow keys to move your block</p>
+                    <p>Each user gets a different colored block</p>
+                    <div class="game-controls">
+                        <button id="muteBtn" disabled>🔇 Mute</button>
+                        <button id="videoBtn" disabled>📹 Video</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right side video panel -->
+            <div class="side-video-panel right-panel">
+                <h3>🎥 Video Chat</h3>
+                <div id="rightVideoGrid" class="side-video-grid"></div>
+                <div class="video-info">
+                    <p>Connected: <span id="userCount">0</span></p>
+                    <p>You: <span id="currentUserId">-</span></p>
+                    <p>Status: <span id="connectionStatus">Disconnected</span></p>
+                    <p>Network: <span id="networkQuality">-</span></p>
+                    <p>RTM: <span id="rtmStatus">Disabled</span></p>
+                    <div class="debug-info">
+                        <button id="debugBtn" onclick="toggleDebug()">🔍 Debug</button>
+                        <button id="testRTMBtn" onclick="testRTM()" style="margin-left: 5px;">🧪 Test</button>
+                        <div id="debugPanel" style="display: none; margin-top: 10px; padding: 8px; background: #f0f0f0; border-radius: 5px; font-size: 11px;">
+                            <p>Remote: <span id="debugRemoteUsers">0</span></p>
+                            <p>Blocks: <span id="debugGameBlocks">0</span></p>
+                            <p>RTM: <span id="debugRTMConnected">false</span></p>
+                            <p>Messages: <span id="debugRTMMessages">0</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agora SDKs -->
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.19.3.js"></script>
+    <script src="https://unpkg.com/agora-rtm-sdk@1.5.3/lib/index.js"></script>
+    
+    <!-- Application scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/videoManager.js"></script>
+    <script src="js/gameManager.js"></script>
+    <script src="js/rtmManager.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
