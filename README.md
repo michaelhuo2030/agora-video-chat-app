@@ -15,13 +15,15 @@ A group video chat application with a simple multiplayer game built using Agora 
 
 ## Setup
 
-### 1. Install Dependencies
+### Local Development
+
+#### 1. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 2. Configure Agora
+#### 2. Configure Agora
 
 1. Create an account at [Agora Console](https://console.agora.io)
 2. Create a new project and get your App ID and App Certificate
@@ -38,13 +40,25 @@ AGORA_APP_CERTIFICATE=your_app_certificate_here
 PORT=3000
 ```
 
-### 3. Run the Application
+#### 3. Run the Application
 
 ```bash
 npm start
 ```
 
 The application will be available at `http://localhost:3000`
+
+### Production Deployment
+
+For production deployment to Vercel, see the [Deployment Guide](DEPLOYMENT.md).
+
+**Quick Deploy to Vercel:**
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/agora-video-chat-app)
+
+**Note:** You'll need to set the following environment variables in Vercel:
+- `AGORA_APP_ID`: Your Agora App ID
+- `AGORA_APP_CERTIFICATE`: Your Agora App Certificate
 
 ## How to Use
 
@@ -71,17 +85,47 @@ The application will be available at `http://localhost:3000`
 ### Architecture
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Backend**: Node.js with Express
+- **Backend**: Node.js with Express (serverless on Vercel)
 - **Video**: Agora RTC SDK for Web
 - **Real-time Communication**: Agora RTM SDK for Web
 - **Game Engine**: HTML5 Canvas with custom game loop
 
+### Project Structure
+
+```
+agora-video-chat-app/
+├── api/
+│   └── index.js          # Serverless function for Vercel
+├── public/
+│   ├── index.html        # Main application page
+│   ├── styles.css        # Application styling
+│   └── js/
+│       ├── app.js        # Main application controller
+│       ├── config.js     # Configuration settings
+│       ├── videoManager.js # Video/audio stream management
+│       ├── gameManager.js  # Game state and rendering
+│       └── rtmManager.js   # Real-time messaging
+├── server.js             # Local development server
+├── vercel.json          # Vercel deployment configuration
+├── package.json         # Dependencies and scripts
+└── env.example          # Environment variables template
+```
+
 ### Key Components
 
-- `VideoManager`: Handles video/audio streams and user management
-- `GameManager`: Manages the game state and rendering
-- `RTMManager`: Handles real-time messaging for game synchronization
-- `App`: Main application controller
+- **VideoManager**: Handles video/audio streams and user management
+- **GameManager**: Manages the game state and rendering
+- **RTMManager**: Handles real-time messaging for game synchronization
+- **App**: Main application controller
+
+### How It Works
+
+1. **User joins a channel** by entering a channel name and username
+2. **Server generates an Agora token** for secure authentication
+3. **Video/audio streams** are established using Agora RTC
+4. **Real-time messaging** is set up using Agora RTM for game synchronization
+5. **Multiplayer game** allows users to move colored blocks in real-time
+6. **All users see each other's** video streams and game movements
 
 ### Security
 

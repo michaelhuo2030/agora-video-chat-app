@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/test",
+      "dest": "/api/test.js"
+    },
+    {
+      "src": "/generate-token",
+      "dest": "/api/generate-token.js"
+    },
+    {
+      "src": "/channel-info",
+      "dest": "/api/channel-info.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ],
+  "env": {
+    "AGORA_APP_ID": "@agora_app_id",
+    "AGORA_APP_CERTIFICATE": "@agora_app_certificate"
+  }
+}
