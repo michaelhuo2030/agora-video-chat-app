@@ -16,8 +16,9 @@ const appId = process.env.AGORA_APP_ID;
 const appCertificate = process.env.AGORA_APP_CERTIFICATE;
 
 if (!appId || !appCertificate) {
-  console.error('Missing Agora credentials. Please set AGORA_APP_ID and AGORA_APP_CERTIFICATE in .env file');
-  process.exit(1);
+  console.error('Missing Agora credentials. Please set AGORA_APP_ID and AGORA_APP_CERTIFICATE environment variables');
+  console.error('App will start but token generation will fail');
+  // Don't exit - let the server start but show warning
 }
 
 // Generate token endpoint
@@ -26,6 +27,14 @@ app.post('/generate-token', (req, res) => {
   
   if (!channelName) {
     return res.status(400).json({ error: 'Channel name is required' });
+  }
+
+  // Check if Agora credentials are available
+  if (!appId || !appCertificate) {
+    return res.status(500).json({ 
+      error: 'Agora credentials not configured',
+      message: 'Please set AGORA_APP_ID and AGORA_APP_CERTIFICATE environment variables'
+    });
   }
 
   try {
@@ -53,7 +62,7 @@ app.post('/generate-token', (req, res) => {
     });
   } catch (error) {
     console.error('Token generation error:', error);
-    res.status(500).json({ error: 'Failed to generate token' });
+    res.status(500).json({ error: 'Failed to generate token', details: error.message });
   }
 });
 
@@ -71,6 +80,17 @@ app.post('/channel-info', (req, res) => {
     channelName,
     timestamp: Date.now(),
     message: 'Channel info endpoint - implement with Agora REST API for detailed info'
+  });
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    hasAppId: !!process.env.AGORA_APP_ID,
+    hasCertificate: !!process.env.AGORA_APP_CERTIFICATE
   });
 });
 
