@@ -93,7 +93,7 @@ class App {
             CONFIG.uid = Math.floor(Math.random() * 100000);
 
             // Get token from server
-            const response = await fetch('/generate-token', {
+            const response = await fetch('/api/generate-token', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

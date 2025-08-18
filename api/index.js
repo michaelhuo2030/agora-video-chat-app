@@ -3,33 +3,33 @@ const fs = require('fs');
 
 module.exports = async (req, res) => {
   try {
-    console.log('🔍 Request URL:', req.url);
-    console.log('🔍 Request method:', req.method);
+    const { pathname } = new URL(req.url, `http://${req.headers.host}`);
     
     // Handle API routes
-    if (req.url === '/test') {
-      console.log('🧪 Handling test endpoint');
-      return require('./test.js')(req, res);
-    }
-    if (req.url === '/generate-token') {
-      console.log('🔑 Handling token generation');
-      return require('./generate-token.js')(req, res);
-    }
-    if (req.url === '/channel-info') {
-      console.log('📊 Handling channel info');
-      return require('./channel-info.js')(req, res);
+    if (pathname.startsWith('/api/')) {
+      const apiPath = pathname.replace('/api/', '');
+      
+      if (apiPath === 'generate-token') {
+        return require('./generate-token.js')(req, res);
+      }
+      if (apiPath === 'test') {
+        return require('./test.js')(req, res);
+      }
+      if (apiPath === 'channel-info') {
+        return require('./channel-info.js')(req, res);
+      }
+      
+      return res.status(404).json({ error: 'API endpoint not found' });
     }
     
     // Handle static files
     const publicPath = path.join(__dirname, '../public');
-    let filePath = path.join(publicPath, req.url);
+    let filePath = path.join(publicPath, pathname);
     
     // Default to index.html for root path
-    if (req.url === '/') {
+    if (pathname === '/') {
       filePath = path.join(publicPath, 'index.html');
     }
-    
-    console.log('📁 Looking for file:', filePath);
     
     // Check if file exists
     if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
@@ -52,16 +52,18 @@ module.exports = async (req, res) => {
         '.wasm': 'application/wasm'
       }[ext] || 'application/octet-stream';
       
-      console.log('📄 Serving file:', filePath, 'with content type:', contentType);
       res.setHeader('Content-Type', contentType);
-      res.sendFile(filePath);
+      const fileContent = fs.readFileSync(filePath);
+      res.end(fileContent);
     } else {
-      console.log('🔄 Fallback to index.html for SPA routing');
       // Fallback to index.html for SPA routing
-      res.sendFile(path.join(publicPath, 'index.html'));
+      const indexPath = path.join(publicPath, 'index.html');
+      const fileContent = fs.readFileSync(indexPath);
+      res.setHeader('Content-Type', 'text/html');
+      res.end(fileContent);
     }
   } catch (error) {
-    console.error('❌ Error in index.js:', error);
+    console.error('Error in index.js:', error);
     res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 };

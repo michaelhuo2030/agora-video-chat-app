@@ -8,24 +8,12 @@
   ],
   "routes": [
     {
-      "src": "/test",
-      "dest": "/api/test.js"
-    },
-    {
-      "src": "/generate-token",
-      "dest": "/api/generate-token.js"
-    },
-    {
-      "src": "/channel-info",
-      "dest": "/api/channel-info.js"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
       "src": "/(.*)",
       "dest": "/api/index.js"
     }
-  ],
-  "env": {
-    "AGORA_APP_ID": "",
-    "AGORA_APP_CERTIFICATE": ""
-  }
+  ]
 }
