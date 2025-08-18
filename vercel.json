@@ -4,17 +4,9 @@
     {
       "src": "api/*.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/",
-      "dest": "/api/index.js"
-    },
     {
       "src": "/test",
       "dest": "/api/test.js"
@@ -29,11 +21,11 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "/api/index.js"
     }
   ],
   "env": {
-    "AGORA_APP_ID": "@agora_app_id",
-    "AGORA_APP_CERTIFICATE": "@agora_app_certificate"
+    "AGORA_APP_ID": "",
+    "AGORA_APP_CERTIFICATE": ""
   }
 }
