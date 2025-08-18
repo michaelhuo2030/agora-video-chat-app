@@ -301,10 +301,40 @@ function testRTM() {
     }
 }
 
+// Test Agora SDK availability
+function testAgoraSDK() {
+    console.log('🧪 Testing Agora SDK availability...');
+    
+    if (typeof AgoraRTC === 'undefined') {
+        console.error('❌ AgoraRTC SDK not loaded!');
+        alert('AgoraRTC SDK failed to load. Please check your internet connection.');
+        return false;
+    }
+    
+    if (typeof AgoraRTM === 'undefined') {
+        console.warn('⚠️ AgoraRTM SDK not loaded (this is optional for basic functionality)');
+    }
+    
+    console.log('✅ AgoraRTC SDK loaded successfully');
+    console.log('📋 SDK Version:', AgoraRTC.VERSION);
+    console.log('🔧 System Requirements:', AgoraRTC.checkSystemRequirements());
+    
+    return true;
+}
+
 // Initialize app when page loads
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 Application starting...');
+    
+    // Test SDK availability first
+    if (!testAgoraSDK()) {
+        return;
+    }
+    
     window.app = new App();
     window.videoManager = window.app.videoManager;
     window.gameManager = window.app.gameManager;
     window.rtmManager = window.app.rtmManager;
+    
+    console.log('✅ Application initialized successfully');
 });

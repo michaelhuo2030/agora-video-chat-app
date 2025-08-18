@@ -11,40 +11,71 @@ class VideoManager {
 
     async initialize() {
         try {
+            console.log('🎥 Initializing video manager...');
+            console.log('📋 Config:', { 
+                appId: CONFIG.appId, 
+                channelName: CONFIG.channelName, 
+                uid: CONFIG.uid,
+                hasToken: !!CONFIG.token 
+            });
+
+            // Check browser compatibility first
+            if (!AgoraRTC.checkSystemRequirements()) {
+                throw new Error('Browser does not support Agora RTC');
+            }
+
             // Create client with proper configuration
             this.client = AgoraRTC.createClient({ 
                 mode: CONFIG.rtc.mode, 
                 codec: CONFIG.rtc.codec 
             });
             
+            console.log('✅ Agora client created successfully');
+            
             // Set up event handlers BEFORE joining
             this.setupEventHandlers();
             
+            console.log('🔗 Joining channel...');
             // Join channel with proper parameters
             await this.client.join(CONFIG.appId, CONFIG.channelName, CONFIG.token, CONFIG.uid);
+            console.log('✅ Successfully joined channel');
             
+            console.log('🎤 Creating audio track...');
             // Create local tracks with proper configuration
             this.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack({
                 encoderConfig: CONFIG.media.audio.encoderConfig,
                 sampleRate: CONFIG.media.audio.sampleRate,
                 bitrate: CONFIG.media.audio.bitrate
             });
+            console.log('✅ Audio track created');
+            
+            console.log('📹 Creating video track...');
             this.localVideoTrack = await AgoraRTC.createCameraVideoTrack({
                 encoderConfig: CONFIG.media.video.encoderConfig,
                 bitrate: CONFIG.media.video.bitrate,
                 frameRate: CONFIG.media.video.frameRate
             });
+            console.log('✅ Video track created');
             
+            console.log('📤 Publishing tracks...');
             // Publish tracks
             await this.client.publish([this.localAudioTrack, this.localVideoTrack]);
+            console.log('✅ Tracks published successfully');
             
             // Add local video to grid
             this.addLocalVideo();
             
             this.isJoined = true;
+            console.log('🎉 Video manager initialized successfully');
             return true;
         } catch (error) {
-            console.error('Failed to initialize video:', error);
+            console.error('❌ Failed to initialize video:', error);
+            console.error('Error details:', {
+                name: error.name,
+                message: error.message,
+                code: error.code,
+                stack: error.stack
+            });
             return false;
         }
     }
